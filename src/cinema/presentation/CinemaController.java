@@ -1,10 +1,16 @@
 package cinema.presentation;
 
 import cinema.businesslayer.CinemaService;
-import cinema.domainmodel.Seats;
+import cinema.domainmodel.Seat;
+import cinema.domainmodel.Token;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class CinemaController {
@@ -13,28 +19,43 @@ public class CinemaController {
     CinemaService cinemaService;
 
     @GetMapping("/seats")
-        public Seats getSeats() {
-            return cinemaService.getSeats();
+    public SeatsDto getSeats() {
+        return cinemaService.getSeats();
+    }
+
+    @PostMapping("/purchase")
+    public TicketDto purchaseTicket(@RequestBody Seat seat) {
+        if (!cinemaService.checkIfRowColumnValid(seat.getRow(), seat.getColumn())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The number of a row or a column is out of bounds!");
+        } else {
+            if (cinemaService.checkIfTicketPurchased(seat.getRow(), seat.getColumn())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The ticket has been already purchased!");
+            } else {
+                return cinemaService.purchaseSeat(seat.getRow(), seat.getColumn());
+            }
         }
-//
-//    @RestController
-//    public class UserController {
-//
-//        @Autowired
-//        UserService userService;
-//
-//        @PostMapping("/user")
-//        public User saveUser(@RequestBody User user) {
-//            User createdUser = userService.save(new User(
-//                    user.getId(), user.getUsername(),
-//                    user.getFirstName(), user.getLastName()));
-//
-//            return createdUser;
-//        }
-//
-//        @GetMapping("/user/{id}")
-//        public User getUser(@PathVariable long id) {
-//            return userService.findUserById(id);
-//        }
-//    }
+    }
+
+    @PostMapping("/return")
+    public ReturnedTicketDto returnTicket(@RequestBody Token token) {
+        if (!cinemaService.checkToken(token.getToken())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong token!");
+        } else {
+            return cinemaService.returnTicket(token.getToken());
+        }
+    }
+
+    @PostMapping("/stats")
+    public StatisticDto getStatistic(@RequestParam("password") Optional<String> password) {
+        if (!password.equals(Optional.of("super_secret"))|| password.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "The password is wrong!");
+        } else {
+            return cinemaService.getStatistic();
+        }
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    protected ResponseEntity<Object> handleConflict(ResponseStatusException ex) {
+        return new ResponseEntity<>(Map.of("error", ex.getReason()), ex.getStatus());
+    }
 }

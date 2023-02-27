@@ -1,25 +1,41 @@
 package cinema.domainmodel;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.UUID;
 
 public class Seat {
-
-    public int getRowNumber() {
-        return rowNumber;
+    public Seat(int row, int column) {
+        this.row = row;
+        this.column = column;
+        this.price = row < 5 ? 10 : 8;
     }
 
-    public int getColumnNumber() {
-        return columnNumber;
+    public Seat(){};
+
+    private int row;
+
+    private int column;
+
+    private int price;
+
+    private UUID token;
+
+    public int getRow() {
+        return row;
     }
 
-    @JsonProperty("row")
-    private int rowNumber;
+    public int getColumn() {
+        return column;
+    }
 
-    @JsonProperty("column")
-    private int columnNumber;
+    public int getPrice() {
+        return price;
+    }
 
-    public Seat(int rowNumber, int columnNumber) {
-        this.columnNumber = columnNumber;
-        this.rowNumber = rowNumber;
+    public UUID getToken() {
+        return token;
+    }
+
+    public void setToken(UUID token) {
+        this.token = token;
     }
 }
