@@ -6,13 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ReturnedTicketDto {
 
     @JsonProperty("returned_ticket")
-    private SeatDto ticket;
+    private SeatDto returnedTicket;
 
     public void setTicket(SeatDto ticket) {
-        this.ticket = ticket;
+        this.returnedTicket = ticket;
     }
 
     public SeatDto getTicket() {
-        return ticket;
+        return returnedTicket;
     }
 }

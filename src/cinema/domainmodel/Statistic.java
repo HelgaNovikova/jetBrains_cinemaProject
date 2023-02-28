@@ -4,7 +4,7 @@ public class Statistic {
 
     private int currentIncome = 0;
 
-    private int numberOfAvailableSeats = 81;
+    private int numberOfAvailableSeats;
 
     private int numberOfPurchasedTickets = 0;
 
@@ -30,5 +30,9 @@ public class Statistic {
 
     public void setNumberOfPurchasedTickets(int numberOfPurchasedTickets) {
         this.numberOfPurchasedTickets = numberOfPurchasedTickets;
+    }
+
+    public Statistic(int numberOfAvailableSeats) {
+        this.numberOfAvailableSeats = numberOfAvailableSeats;
     }
 }

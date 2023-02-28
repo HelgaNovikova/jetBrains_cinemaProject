@@ -28,7 +28,7 @@ public class CinemaService implements CommandLineRunner {
             }
         }
         seats = new Seats(numOfRows, numOfColumns, seatsArr);
-        statistic = new Statistic();
+        statistic = new Statistic(numOfRows * numOfColumns);
     }
 
     @Override
@@ -54,11 +54,11 @@ public class CinemaService implements CommandLineRunner {
         return seatDto;
     }
 
-    public boolean checkIfRowColumnValid(int rowNum, int columnNum) {
+    public boolean isRowColumnValid(int rowNum, int columnNum) {
         return rowNum < 10 && rowNum >= 1 && columnNum < 10 && columnNum >= 1;
     }
 
-    public boolean checkIfTicketPurchased(int rowNum, int columnNum) {
+    public boolean isTicketPurchased(int rowNum, int columnNum) {
         return seats.getSeat(rowNum, columnNum).getToken() != null;
     }
 
@@ -76,7 +76,6 @@ public class CinemaService implements CommandLineRunner {
     }
 
     public boolean checkToken(UUID token) {
-        boolean s = seats.findSeatByToken(token) != null;
         return seats.findSeatByToken(token) != null;
     }
 
